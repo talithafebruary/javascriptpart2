@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pertempuran Energi</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(145deg, #0a0f24, #1b2440);
+        color: white;
+        padding: 20px;
+        margin: 0;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #00c8ff;
+    }
+
+    #game {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .player-box {
+        width: 260px;
+        background: #111a33;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+        transition: 0.3s;
+    }
+
+    .player-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 35px rgba(0, 200, 255, 0.7);
+    }
+
+    .energy-bar {
+        width: 100%;
+        height: 20px;
+        background: #333;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+
+    .energy-fill {
+        height: 100%;
+        background: #00ff22;
+        transition: width 0.4s ease, background 0.4s ease;
+    }
+
+    .low { background: red !important; }
+    .mid { background: yellow !important; }
+    .high { background: #00ff22 !important; }
+
+    .shake {
+        animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(-5px, 0); }
+        50% { transform: translate(5px, 0); }
+        75% { transform: translate(-5px, 0); }
+        100% { transform: translate(0, 0); }
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: none;
+        border-radius: 8px;
+        background: #00aaff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #0088dd;
+    }
+</style>
+
+</head>
+<body>
+
+<h2>⚔️ Arena Pertempuran Talitha HaHa ⚔️</h2>
+
+<div id="game"></div>
+
+<script>
+/* FUNGSI KAMU — TIDAK DIUBAH SAMA SEKALI */
+function Pemain(nama, energi) {
+    this.nama = nama;
+    this.energi = energi;
+
+    this.makan = function(porsi) {
+        this.energi += porsi;
+        updateDisplay();
+    };
+
+    this.damage = function(attack) {
+        this.energi -= attack;
+        if (this.energi < 0) this.energi = 0;
+        shakeEffect(this.nama);
+        updateDisplay();
+    };
+
+    setInterval(() => {
+        this.energi++;
+        updateDisplay();
+    }, 1000);
+}
+
+/* PEMAIN SESUAI YANG KAMU MAU */
+let Andi = new Pemain("Andi", 10);
+let Donny = new Pemain("Donny", 11);
+
+/* TEMPLATE CARD */
+function createPlayerCard(p) {
+    let levelClass = "high";
+    if (p.energi < 30) levelClass = "low";
+    else if (p.energi < 70) levelClass = "mid";
+
+    return `
+        <div class="player-box" id="${p.nama}">
+            <h3>${p.nama}</h3>
+
+            <p>Energi: ${p.energi}</p>
+
+            <div class="energy-bar">
+                <div class="energy-fill ${levelClass}" style="width:${Math.min(p.energi,100)}%"></div>
+            </div>
+
+            <button onclick="${p.nama}.makan(2)">Makan (+2)</button>
+            <button onclick="${p.nama}.damage(3)">Damage (-3)</button>
+        </div>
+    `;
+}
+
+/* UPDATE TAMPILAN */
+function updateDisplay() {
+    document.getElementById("game").innerHTML =
+        createPlayerCard(Andi) +
+        createPlayerCard(Donny);
+}
+
+/* ANIMASI SHAKE */
+function shakeEffect(namaPlayer) {
+    let box = document.getElementById(namaPlayer);
+    if (!box) return;
+    box.classList.add("shake");
+    setTimeout(() => box.classList.remove("shake"), 400);
+}
+
+updateDisplay();
+</script>
+
+</body>
+</html>

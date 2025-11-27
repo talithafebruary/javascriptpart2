@@ -2,167 +2,111 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pertempuran Energi</title>
+<title>ARENA CYBER TALITHA 3000</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(145deg, #0a0f24, #1b2440);
-        color: white;
-        padding: 20px;
-        margin: 0;
-    }
+body {
+    background: radial-gradient(circle, #001020, #000000);
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    margin: 0;
+}
 
-    h2 {
-        text-align: center;
-        font-size: 30px;
-        margin-bottom: 20px;
-        text-shadow: 0 0 10px #00c8ff;
-    }
+h2 {
+    font-size: 40px;
+    margin-top: 20px;
+    text-shadow: 0 0 25px cyan, 0 0 40px blue;
+}
 
-    #game {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-    }
+#game {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
 
-    .player-box {
-        width: 260px;
-        background: #111a33;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
-        transition: 0.3s;
-    }
+.player-box {
+    width: 300px;
+    padding: 20px;
+    background: rgba(0, 20, 50, 0.7);
+    border-radius: 20px;
+    border: 2px solid cyan;
+    box-shadow: 0 0 25px cyan inset, 0 0 25px cyan;
+    transition: 0.4s;
+    position: relative;
+}
 
-    .player-box:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 35px rgba(0, 200, 255, 0.7);
-    }
+.energy-bar {
+    width: 100%;
+    height: 25px;
+    background: #111;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 2px solid cyan;
+}
 
-    .energy-bar {
-        width: 100%;
-        height: 20px;
-        background: #333;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 15px;
-    }
+.energy-fill {
+    height: 100%;
+    background: #00ffaa;
+    transition: width 0.3s;
+}
 
-    .energy-fill {
-        height: 100%;
-        background: #00ff22;
-        transition: width 0.4s ease, background 0.4s ease;
-    }
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    font-size: 16px;
+    background: rgba(0, 255, 255, 0.3);
+    border: 2px solid cyan;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-    .low { background: red !important; }
-    .mid { background: yellow !important; }
-    .high { background: #00ff22 !important; }
+button:hover {
+    background: cyan;
+    color: black;
+    box-shadow: 0 0 20px cyan;
+}
 
-    .shake {
-        animation: shake 0.4s;
-    }
+.shake {
+    animation: shake 0.4s;
+}
 
-    @keyframes shake {
-        0% { transform: translate(0, 0); }
-        25% { transform: translate(-5px, 0); }
-        50% { transform: translate(5px, 0); }
-        75% { transform: translate(-5px, 0); }
-        100% { transform: translate(0, 0); }
-    }
+@keyframes shake {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(-8px,0); }
+    100% { transform: translate(0,0); }
+}
 
-    button {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border: none;
-        border-radius: 8px;
-        background: #00aaff;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+.hit-effect {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, red, transparent);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: boom 0.4s ease-out;
+}
 
-    button:hover {
-        background: #0088dd;
-    }
+@keyframes boom {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(.5); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+}
 </style>
-
 </head>
+
 <body>
 
-<h2>⚔️ Arena Pertempuran Talitha HaHaaa ⚔️</h2>
+<h2>⚔️ ARENA CYBER TALITHA 3000 ⚔️</h2>
 
 <div id="game"></div>
 
-<script>
-/* FUNGSI KAMU — TIDAK DIUBAH SAMA SEKALI */
-function Pemain(nama, energi) {
-    this.nama = nama;
-    this.energi = energi;
-
-    this.makan = function(porsi) {
-        this.energi += porsi;
-        updateDisplay();
-    };
-
-    this.damage = function(attack) {
-        this.energi -= attack;
-        if (this.energi < 0) this.energi = 0;
-        shakeEffect(this.nama);
-        updateDisplay();
-    };
-
-    setInterval(() => {
-        this.energi++;
-        updateDisplay();
-    }, 1000);
-}
-
-/* PEMAIN SESUAI YANG KAMU MAU */
-let Andi = new Pemain("Andi", 10);
-let Donny = new Pemain("Donny", 11);
-
-/* TEMPLATE CARD */
-function createPlayerCard(p) {
-    let levelClass = "high";
-    if (p.energi < 30) levelClass = "low";
-    else if (p.energi < 70) levelClass = "mid";
-
-    return `
-        <div class="player-box" id="${p.nama}">
-            <h3>${p.nama}</h3>
-
-            <p>Energi: ${p.energi}</p>
-
-            <div class="energy-bar">
-                <div class="energy-fill ${levelClass}" style="width:${Math.min(p.energi,100)}%"></div>
-            </div>
-
-            <button onclick="${p.nama}.makan(2)">Makan (+2)</button>
-            <button onclick="${p.nama}.damage(3)">Damage (-3)</button>
-        </div>
-    `;
-}
-
-/* UPDATE TAMPILAN */
-function updateDisplay() {
-    document.getElementById("game").innerHTML =
-        createPlayerCard(Andi) +
-        createPlayerCard(Donny);
-}
-
-/* ANIMASI SHAKE */
-function shakeEffect(namaPlayer) {
-    let box = document.getElementById(namaPlayer);
-    if (!box) return;
-    box.classList.add("shake");
-    setTimeout(() => box.classList.remove("shake"), 400);
-}
-
-updateDisplay();
-</script>
-
+<script src="lanjutanpart2.js"></script>
 </body>
 </html>
